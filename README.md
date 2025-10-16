@@ -28,7 +28,7 @@ Based on the exam results , heros are graded based on the following threat tiers
 - Windows Forms ( UI Framework)
 - C# 
 - Git for Version Control
-- Visual Studio 
+- Visual Studio IDE
 
 ## Getting Started 
 
