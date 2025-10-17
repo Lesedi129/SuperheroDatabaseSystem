@@ -116,7 +116,10 @@ namespace SuperheroDatabaseSystem
             txtHeroID.ReadOnly = false;
         }
 
-       
+        private void btnView_Click(object sender, EventArgs e)
+        {
+            PopulateGrid();
+        }
     }
 }
 
