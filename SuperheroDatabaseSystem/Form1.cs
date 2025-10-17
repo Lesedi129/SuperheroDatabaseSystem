@@ -116,10 +116,67 @@ namespace SuperheroDatabaseSystem
             txtHeroID.ReadOnly = false;
         }
 
+        // VIEW FUNCTIONALITY
         private void btnView_Click(object sender, EventArgs e)
         {
             PopulateGrid();
         }
+
+        // DELETE FUNCTIONALITY
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+             // This Checks  if a row is selected in the DataGridView
+            if (heroTable.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a hero from the datagrid to be delete.", "No Hero Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+          
+            DialogResult confirm = MessageBox.Show("Are you sure you want to delete this hero?", "Confirm Deletion",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.No)
+            {
+                return;
+            }
+
+            // / This retrieves the selected heroID from the DataGridView
+            int heroIdToDelete = Convert.ToInt32(heroTable.SelectedRows[0].Cells["HeroID"].Value);
+
+           
+            HeroRecords dataHandler = new HeroRecords();
+            List<Superhero> heroes = dataHandler.GetAllSuperheroes();
+
+            //  Finds the hero to delete using foreach loop
+            Superhero heroToDelete = null;
+            foreach (Superhero hero in heroes)
+            {
+                if (hero.HeroID == heroIdToDelete)
+                {
+                    heroToDelete = hero;
+                    break;
+                }
+            }
+
+            // This searches for the hero and removes them from the list if found
+            if (heroToDelete != null)
+            {
+                heroes.Remove(heroToDelete);
+                dataHandler.SaveAllSuperheroes(heroes);
+
+                MessageBox.Show("Superhero deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ClearForm();
+                PopulateGrid();
+            }
+            else
+            {
+                MessageBox.Show("Hero was not found. Could not delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }
+    
 
