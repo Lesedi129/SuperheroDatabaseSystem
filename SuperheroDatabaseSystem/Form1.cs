@@ -175,8 +175,77 @@ namespace SuperheroDatabaseSystem
                 MessageBox.Show("Hero was not found. Could not delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        //UPDATE FUNCTIONALITY
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (!IsHeroInputValid())
+            {
+                return;
+            }
 
+            // The folowing tries to parse the HeroID from the input field
+            if (!int.TryParse(txtHeroID.Text, out int heroIdToUpdate))
+            {
+                MessageBox.Show("Please enter a valid Hero ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // This creates an instance of HeroRecords to handle data operations
+            HeroRecords dataHandler = new HeroRecords();
+
+
+            List<Superhero> heroes = dataHandler.GetAllSuperheroes();
+
+            // This finds the hero with the matching HeroID
+            Superhero heroToUpdate = heroes.FirstOrDefault(hero => hero.HeroID == heroIdToUpdate);
+
+            if (heroToUpdate != null)
+            {
+
+                heroToUpdate.Name = txtName.Text;
+                heroToUpdate.Age = int.Parse(txtAge.Text);
+                heroToUpdate.SuperPower = txtSuperPower.Text;
+                heroToUpdate.ExamScore = int.Parse(txtExamScore.Text);
+
+                // The following Recalculates the derived properties by recreating the hero
+                Superhero updatedHero = new Superhero
+                {
+                    HeroID = heroToUpdate.HeroID,
+                    Name = heroToUpdate.Name,
+                    Age = heroToUpdate.Age,
+                    SuperPower = heroToUpdate.SuperPower,
+                    ExamScore = heroToUpdate.ExamScore
+                };
+
+                // Replaces the old hero data with the updated data in the list
+                int index = heroes.FindIndex(h => h.HeroID == heroIdToUpdate);
+                if (index >= 0)
+                {
+                    heroes[index] = updatedHero;
+                }
+
+
+                dataHandler.SaveAllSuperheroes(heroes);
+                PopulateGrid();
+                ClearForm();
+
+                MessageBox.Show("Superhero updated successfully!", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+
+                MessageBox.Show("Hero not found. Could not update.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+       
     }
 }
-    
+
+
+
+
+ 
 
