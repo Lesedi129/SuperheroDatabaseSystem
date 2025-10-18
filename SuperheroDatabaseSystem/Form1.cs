@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperheroDatabaseSystem.DataLayer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SuperheroDatabaseSystem.DataLayer;
+using System.Xml.Linq;
 
 namespace SuperheroDatabaseSystem
 {
@@ -76,10 +77,14 @@ namespace SuperheroDatabaseSystem
         {
             HeroRecords dataHandler = new HeroRecords();
             List<Superhero> heroes = dataHandler.GetAllSuperheroes();
+
+            //This sets the dataset to null before assigning new data to refresh the grid properly.
+            heroTable.DataSource = null;
             heroTable.DataSource = heroes;
         }
 
-        //ADD FUNCTIONALITY
+        //-----------ADD FUNCTIONALITY
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             if (!IsHeroInputValid())
@@ -99,7 +104,8 @@ namespace SuperheroDatabaseSystem
 
             HeroRecords dataHandler = new HeroRecords();
             dataHandler.AddSuperhero(newHero);
-            MessageBox.Show("Superhero added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Superhero added successfully!", "Success",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             ClearForm();
             PopulateGrid();
@@ -113,26 +119,31 @@ namespace SuperheroDatabaseSystem
             txtAge.Clear();
             txtSuperPower.Clear();
             txtExamScore.Clear();
+
             txtHeroID.ReadOnly = false;
+           
         }
 
-        // VIEW FUNCTIONALITY
+        //--------------VIEW FUNCTIONALITY
+
         private void btnView_Click(object sender, EventArgs e)
         {
             PopulateGrid();
         }
 
-        // DELETE FUNCTIONALITY
+        //--------------- DELETE FUNCTIONALITY
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
-             // This Checks  if a row is selected in the DataGridView
+            // This Checks  if a row is selected in the DataGridView
             if (heroTable.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select a hero from the datagrid to be delete.", "No Hero Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please select a hero from the datagrid to be delete.", "No Hero Selected",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-          
+
             DialogResult confirm = MessageBox.Show("Are you sure you want to delete this hero?", "Confirm Deletion",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -144,7 +155,7 @@ namespace SuperheroDatabaseSystem
             // / This retrieves the selected heroID from the DataGridView
             int heroIdToDelete = Convert.ToInt32(heroTable.SelectedRows[0].Cells["HeroID"].Value);
 
-           
+
             HeroRecords dataHandler = new HeroRecords();
             List<Superhero> heroes = dataHandler.GetAllSuperheroes();
 
@@ -165,17 +176,21 @@ namespace SuperheroDatabaseSystem
                 heroes.Remove(heroToDelete);
                 dataHandler.SaveAllSuperheroes(heroes);
 
-                MessageBox.Show("Superhero deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Superhero deleted successfully.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearForm();
                 PopulateGrid();
             }
             else
             {
-                MessageBox.Show("Hero was not found. Could not delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Hero was not found. Could not delete.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        //UPDATE FUNCTIONALITY
+
+        //--------------- UPDATE FUNCTIONALITY
+
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (!IsHeroInputValid())
@@ -240,12 +255,89 @@ namespace SuperheroDatabaseSystem
             }
         }
 
-       
+        //-------- SUMMARY REPORT FUNCTIONALITY-------------------
+
+        private void btnGenerateSummary_Click(object sender, EventArgs e)
+        {
+            HeroRecords dataHandler = new HeroRecords();
+            List<Superhero> heroes = dataHandler.GetAllSuperheroes();
+
+            if (heroes.Count == 0)
+            {
+                MessageBox.Show("No data available to generate a report.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            int totalHeroes = heroes.Count;
+
+            // The following Calculates the average age
+            int totalAge = 0;
+            foreach (Superhero hero in heroes)
+            {
+                totalAge += hero.Age;
+            }
+            int averageAge = (int)totalAge / totalHeroes;
+
+
+            // This calculates the average exam score by summing all scores and dividing by total heroes
+            int totalScore = 0;
+            foreach (Superhero hero in heroes)
+            {
+                totalScore += hero.ExamScore;
+            }
+            int averageScore = totalScore / totalHeroes;
+
+            // Counts the heroes by rank
+            int sRankCount = 0;
+            int aRankCount = 0;
+            int bRankCount = 0;
+            int cRankCount = 0;
+
+            foreach (Superhero hero in heroes)
+            {
+                if (hero.Rank == "S")
+                    sRankCount++;
+                else if (hero.Rank == "A")
+                    aRankCount++;
+                else if (hero.Rank == "B")
+                    bRankCount++;
+                else if (hero.Rank == "C")
+                    cRankCount++;
+            }
+
+            // This line displays the calculated summary statistics on the form labels
+            lblTotalNoHeros.Text = totalHeroes.ToString();
+            lblAverageAge.Text = averageAge.ToString("F1");
+            lblExamScore.Text = averageScore.ToString("F0");
+            lblS.Text = sRankCount.ToString();
+            lblA.Text = aRankCount.ToString();
+            lblB.Text = bRankCount.ToString();
+            lblC.Text = cRankCount.ToString();
+
+            // Creates the summary report content to be saved to the summary.txt file
+            StringBuilder reportContent = new StringBuilder();
+            reportContent.AppendLine("-----Superhero Academy Summary Report-----");
+            reportContent.AppendLine($"Generated on: {DateTime.Now}");
+            reportContent.AppendLine("-------------------------------------------");
+            reportContent.AppendLine($"Total Heroes: {totalHeroes}");
+            reportContent.AppendLine($"Average Age: {averageAge:F1}");
+            reportContent.AppendLine($"Average Exam Score: {averageScore:F0}");
+            reportContent.AppendLine("---- Hero Counts by Rank ----");
+            reportContent.AppendLine($"- S Rank: {sRankCount}");
+            reportContent.AppendLine($"- A Rank: {aRankCount}");
+            reportContent.AppendLine($"- B Rank: {bRankCount}");
+            reportContent.AppendLine($"- C Rank: {cRankCount}");
+
+
+            dataHandler.SaveSummaryReport(reportContent.ToString());
+
+            MessageBox.Show("Summary report generated and saved to summary.txt.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
 
 
 
 
- 
+
 
