@@ -74,17 +74,17 @@ namespace SuperheroDatabaseSystem
         {  
             string[] heroDetails = line.Split(',');
 
-            if (heroDetails.Length == 7)
+            if (heroDetails.Length >= 5 )
             {
                 try
                 {
                     return new Superhero
                     {
-                        HeroID = int.Parse(heroDetails[0]),
-                        Name = heroDetails[1],
-                        Age = int.Parse(heroDetails[2]),
-                        SuperPower = heroDetails[3],
-                        ExamScore = int.Parse(heroDetails[4])
+                        HeroID = int.Parse(heroDetails[0].Trim()),
+                        Name = heroDetails[1].Trim(),
+                        Age = int.Parse(heroDetails[2].Trim()),
+                        SuperPower = heroDetails[3].Trim(),
+                        ExamScore = int.Parse(heroDetails[4].Trim())
                     };
                 }
                 catch (FormatException)
@@ -100,7 +100,7 @@ namespace SuperheroDatabaseSystem
 
         public override string ToString()
         {
-            return $"{HeroID},{Name},{Age},{SuperPower}, {ExamScore},{Rank}, {ThreatLevel}";
+            return $"{HeroID},{Name},{Age},{SuperPower},{ExamScore},{Rank},{ThreatLevel}";
         }
     }
 }
