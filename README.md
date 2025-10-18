@@ -10,6 +10,7 @@ The application has the following basic functions:
 - **View All Superheroes** :  This will list all the records of superheroes in a DataGridview, where all the details of the superheroes including the rank and threat level calculated are shown.
 - **Update Superhero Information** : choose an existing hero, update their information and save the changes in the file. In case of change in the exam score, rank and threat level are recalculated.
 - Generate summary report : This will calculate and display stats such as the number of heroes , the average age, the average exam score and the number of heroes by rank , all of that information will be stored in a textfile .
+- **Delete Superhero Information** : This will perminantley delete the hero , from the system.
 
 ## Ranking System 
 
