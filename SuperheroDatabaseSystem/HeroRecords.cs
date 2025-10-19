@@ -6,14 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace SuperheroDatabaseSystem.DataLayer
 {
     public class HeroRecords
     {
-        private readonly string filepath = "superheroes.txt";
-        private readonly string summaryFilepath = "summary.txt";
-
+        private readonly string filepath = Path.Combine(Application.StartupPath, "superheroes.txt");
+        private readonly string summaryFilepath = Path.Combine(Application.StartupPath, "summary.txt");
 
         public List<Superhero> GetAllSuperheroes()
 
@@ -25,6 +23,7 @@ namespace SuperheroDatabaseSystem.DataLayer
             {
                 if (!File.Exists(filepath))
                 {
+                    File.Create(filepath).Close(); 
                     return new List<Superhero>();
                 }
                 string[] lines = File.ReadAllLines(filepath);
@@ -61,9 +60,8 @@ namespace SuperheroDatabaseSystem.DataLayer
         {
             try
             {
-
                 List<string> lines = heroes.Select(hero => hero.ToString()).ToList();
-                File.WriteAllLines(filepath, lines);
+                File.WriteAllLines(filepath, lines);   
             }
             catch (Exception ex)
             {
