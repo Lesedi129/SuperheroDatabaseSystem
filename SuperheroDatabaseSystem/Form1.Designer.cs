@@ -501,6 +501,7 @@
             this.gpTotalno.TabIndex = 13;
             this.gpTotalno.TabStop = false;
             this.gpTotalno.Text = "Total Number of Heros";
+            
             // 
             // lblTotalNoHeros
             // 
