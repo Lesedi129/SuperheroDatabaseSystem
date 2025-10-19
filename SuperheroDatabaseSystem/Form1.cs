@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
 
 namespace SuperheroDatabaseSystem
@@ -111,7 +112,7 @@ namespace SuperheroDatabaseSystem
             PopulateGrid();
         }
 
-        // This Clears the input fields after adding a hero
+
         private void ClearForm()
         {
             txtHeroID.Clear();
@@ -120,8 +121,9 @@ namespace SuperheroDatabaseSystem
             txtSuperPower.Clear();
             txtExamScore.Clear();
 
+            // It Sets the HeroID textbox to be editable again after clearing the form
             txtHeroID.ReadOnly = false;
-           
+
         }
 
         //--------------VIEW FUNCTIONALITY
@@ -135,32 +137,27 @@ namespace SuperheroDatabaseSystem
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            // This Checks  if a row is selected in the DataGridView
             if (heroTable.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select a hero from the datagrid to be delete.", "No Hero Selected",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please select a hero from the list to delete.", "No Hero Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-
-            DialogResult confirm = MessageBox.Show("Are you sure you want to delete this hero?", "Confirm Deletion",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
+            DialogResult confirm = MessageBox.Show("Are you sure you want to delete this hero?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm == DialogResult.No)
             {
                 return;
             }
 
-            // / This retrieves the selected heroID from the DataGridView
+            // Retrieves the HeroID of the selected hero from the DataGridView
             int heroIdToDelete = Convert.ToInt32(heroTable.SelectedRows[0].Cells["HeroID"].Value);
-
 
             HeroRecords dataHandler = new HeroRecords();
             List<Superhero> heroes = dataHandler.GetAllSuperheroes();
 
-            //  Finds the hero to delete using foreach loop
             Superhero heroToDelete = null;
+
+            // This uses a foreach loop to find the hero to delete based on the HeroID
             foreach (Superhero hero in heroes)
             {
                 if (hero.HeroID == heroIdToDelete)
@@ -170,22 +167,19 @@ namespace SuperheroDatabaseSystem
                 }
             }
 
-            // This searches for the hero and removes them from the list if found
             if (heroToDelete != null)
             {
                 heroes.Remove(heroToDelete);
                 dataHandler.SaveAllSuperheroes(heroes);
 
-                MessageBox.Show("Superhero deleted successfully.", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Superhero deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearForm();
                 PopulateGrid();
             }
             else
             {
-                MessageBox.Show("Hero was not found. Could not delete.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Hero was not found. Could not delete.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -198,64 +192,55 @@ namespace SuperheroDatabaseSystem
                 return;
             }
 
-            // The folowing tries to parse the HeroID from the input field
             if (!int.TryParse(txtHeroID.Text, out int heroIdToUpdate))
             {
-                MessageBox.Show("Please enter a valid Hero ID.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The Hero ID in the textbox is not a valid number.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // This creates an instance of HeroRecords to handle data operations
             HeroRecords dataHandler = new HeroRecords();
-
-
             List<Superhero> heroes = dataHandler.GetAllSuperheroes();
 
-            // This finds the hero with the matching HeroID
-            Superhero heroToUpdate = heroes.FirstOrDefault(hero => hero.HeroID == heroIdToUpdate);
+            Superhero heroToUpdate = null;
+            int indexToUpdate = -1;
+
+            // This finds the hero to update using a for loop to get the index
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                if (heroes[i].HeroID == heroIdToUpdate)
+                {
+                    heroToUpdate = heroes[i];
+                    //Saves the position of the hero in the list for updating
+                    indexToUpdate = i;
+                    break;
+                }
+            }
 
             if (heroToUpdate != null)
             {
-
                 heroToUpdate.Name = txtName.Text;
                 heroToUpdate.Age = int.Parse(txtAge.Text);
                 heroToUpdate.SuperPower = txtSuperPower.Text;
                 heroToUpdate.ExamScore = int.Parse(txtExamScore.Text);
 
-                // The following Recalculates the derived properties by recreating the hero
-                Superhero updatedHero = new Superhero
-                {
-                    HeroID = heroToUpdate.HeroID,
-                    Name = heroToUpdate.Name,
-                    Age = heroToUpdate.Age,
-                    SuperPower = heroToUpdate.SuperPower,
-                    ExamScore = heroToUpdate.ExamScore
-                };
 
-                // Replaces the old hero data with the updated data in the list
-                int index = heroes.FindIndex(h => h.HeroID == heroIdToUpdate);
-                if (index >= 0)
-                {
-                    heroes[index] = updatedHero;
-                }
+                // This line updates the hero in the list at the found index
+                heroes[indexToUpdate] = heroToUpdate;
 
 
                 dataHandler.SaveAllSuperheroes(heroes);
-                PopulateGrid();
-                ClearForm();
 
-                MessageBox.Show("Superhero updated successfully!", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Superhero updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ClearForm();
+                PopulateGrid();
             }
             else
             {
-
-                MessageBox.Show("Hero not found. Could not update.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Hero not found. Could not update.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        //-------- SUMMARY REPORT FUNCTIONALITY-------------------
+        //-----------------SUMMARY REPORT FUNCTIONALITY
 
         private void btnGenerateSummary_Click(object sender, EventArgs e)
         {
@@ -271,21 +256,21 @@ namespace SuperheroDatabaseSystem
             int totalHeroes = heroes.Count;
 
             // The following Calculates the average age
-            int totalAge = 0;
+            double totalAge = 0;
             foreach (Superhero hero in heroes)
             {
                 totalAge += hero.Age;
             }
-            int averageAge = (int)totalAge / totalHeroes;
+            double averageAge = (int)totalAge / totalHeroes;
 
 
             // This calculates the average exam score by summing all scores and dividing by total heroes
-            int totalScore = 0;
+            double totalScore = 0;
             foreach (Superhero hero in heroes)
             {
                 totalScore += hero.ExamScore;
             }
-            int averageScore = totalScore / totalHeroes;
+            double averageScore = totalScore / totalHeroes;
 
             // Counts the heroes by rank
             int sRankCount = 0;
@@ -333,10 +318,29 @@ namespace SuperheroDatabaseSystem
 
             MessageBox.Show("Summary report generated and saved to summary.txt.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+
+        //The method handles the event when a cell in the DataGridView is clicked
+        private void heroTable_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                //retrieves the clicked row
+                DataGridViewRow row = this.heroTable.Rows[e.RowIndex];
+
+                txtHeroID.Text = row.Cells["HeroID"].Value.ToString();
+                txtName.Text = row.Cells["Name"].Value.ToString();
+                txtAge.Text = row.Cells["Age"].Value.ToString();
+                txtSuperPower.Text = row.Cells["SuperPower"].Value.ToString();
+                txtExamScore.Text = row.Cells["ExamScore"].Value.ToString();
+
+                // Makes the HeroID textbox read-only to prevent changes during updates
+                txtHeroID.ReadOnly = true;
+            }
+        }
+
     }
 }
-
-
 
 
 

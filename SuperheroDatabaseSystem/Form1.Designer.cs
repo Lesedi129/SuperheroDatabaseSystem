@@ -58,6 +58,10 @@
             this.lblExamScore = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.gpNoRank = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.lblB = new System.Windows.Forms.Label();
             this.lblC = new System.Windows.Forms.Label();
             this.lblA = new System.Windows.Forms.Label();
@@ -137,13 +141,16 @@
             // 
             // heroTable
             // 
+            this.heroTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.heroTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.heroTable.Location = new System.Drawing.Point(20, 37);
+            this.heroTable.MultiSelect = false;
             this.heroTable.Name = "heroTable";
             this.heroTable.RowHeadersWidth = 51;
             this.heroTable.RowTemplate.Height = 24;
             this.heroTable.Size = new System.Drawing.Size(858, 278);
             this.heroTable.TabIndex = 1;
+            this.heroTable.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.heroTable_CellContentClick);
             // 
             // lblHeroData
             // 
@@ -188,6 +195,7 @@
             this.btnDelete.TabIndex = 12;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnView
             // 
@@ -200,6 +208,7 @@
             this.btnView.TabIndex = 11;
             this.btnView.Text = "View";
             this.btnView.UseVisualStyleBackColor = false;
+            this.btnView.Click += new System.EventHandler(this.btnView_Click);
             // 
             // btnUpdate
             // 
@@ -212,6 +221,7 @@
             this.btnUpdate.TabIndex = 10;
             this.btnUpdate.Text = "Update";
             this.btnUpdate.UseVisualStyleBackColor = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // btnAdd
             // 
@@ -277,9 +287,9 @@
             this.lblSuperPower.Font = new System.Drawing.Font("Candara", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSuperPower.Location = new System.Drawing.Point(26, 162);
             this.lblSuperPower.Name = "lblSuperPower";
-            this.lblSuperPower.Size = new System.Drawing.Size(112, 22);
+            this.lblSuperPower.Size = new System.Drawing.Size(116, 22);
             this.lblSuperPower.TabIndex = 7;
-            this.lblSuperPower.Text = "SuperPower :";
+            this.lblSuperPower.Text = "Super Power :";
             // 
             // label3
             // 
@@ -383,6 +393,10 @@
             // gpNoRank
             // 
             this.gpNoRank.BackColor = System.Drawing.Color.White;
+            this.gpNoRank.Controls.Add(this.label8);
+            this.gpNoRank.Controls.Add(this.label7);
+            this.gpNoRank.Controls.Add(this.label6);
+            this.gpNoRank.Controls.Add(this.label4);
             this.gpNoRank.Controls.Add(this.lblB);
             this.gpNoRank.Controls.Add(this.lblC);
             this.gpNoRank.Controls.Add(this.lblA);
@@ -395,45 +409,85 @@
             this.gpNoRank.TabStop = false;
             this.gpNoRank.Text = "Number of Heros Per Rank";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Candara", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(201, 116);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(90, 28);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "C-Rank :";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Candara", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(201, 59);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(90, 28);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "B-Rank :";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Candara", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(9, 59);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(89, 28);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "S-Rank :";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Candara", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(10, 116);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(91, 28);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "A-Rank :";
+            // 
             // lblB
             // 
             this.lblB.AutoSize = true;
-            this.lblB.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblB.Location = new System.Drawing.Point(193, 42);
+            this.lblB.Font = new System.Drawing.Font("Candara", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblB.Location = new System.Drawing.Point(300, 50);
             this.lblB.Name = "lblB";
-            this.lblB.Size = new System.Drawing.Size(79, 24);
+            this.lblB.Size = new System.Drawing.Size(35, 40);
             this.lblB.TabIndex = 11;
-            this.lblB.Text = "B-Rank :";
+            this.lblB.Text = "0";
             // 
             // lblC
             // 
             this.lblC.AutoSize = true;
-            this.lblC.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblC.Location = new System.Drawing.Point(193, 107);
+            this.lblC.Font = new System.Drawing.Font("Candara", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblC.Location = new System.Drawing.Point(300, 108);
             this.lblC.Name = "lblC";
-            this.lblC.Size = new System.Drawing.Size(74, 24);
+            this.lblC.Size = new System.Drawing.Size(35, 40);
             this.lblC.TabIndex = 10;
-            this.lblC.Text = "C-Rank:";
+            this.lblC.Text = "0";
             // 
             // lblA
             // 
             this.lblA.AutoSize = true;
-            this.lblA.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblA.Location = new System.Drawing.Point(24, 108);
+            this.lblA.Font = new System.Drawing.Font("Candara", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblA.Location = new System.Drawing.Point(104, 107);
             this.lblA.Name = "lblA";
-            this.lblA.Size = new System.Drawing.Size(80, 24);
+            this.lblA.Size = new System.Drawing.Size(35, 40);
             this.lblA.TabIndex = 9;
-            this.lblA.Text = "A-Rank :";
+            this.lblA.Text = "0";
             // 
             // lblS
             // 
             this.lblS.AutoSize = true;
-            this.lblS.Font = new System.Drawing.Font("Candara", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblS.Location = new System.Drawing.Point(24, 42);
+            this.lblS.Font = new System.Drawing.Font("Candara", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblS.Location = new System.Drawing.Point(104, 59);
             this.lblS.Name = "lblS";
-            this.lblS.Size = new System.Drawing.Size(77, 24);
+            this.lblS.Size = new System.Drawing.Size(35, 40);
             this.lblS.TabIndex = 8;
-            this.lblS.Text = "S-Rank :";
+            this.lblS.Text = "0";
             // 
             // gpTotalno
             // 
@@ -489,6 +543,7 @@
             this.btnGenerateSummary.TabIndex = 11;
             this.btnGenerateSummary.Text = "Generate Summary";
             this.btnGenerateSummary.UseVisualStyleBackColor = false;
+            this.btnGenerateSummary.Click += new System.EventHandler(this.btnGenerateSummary_Click);
             // 
             // Form1
             // 
@@ -566,6 +621,10 @@
         private System.Windows.Forms.Label lblC;
         private System.Windows.Forms.Label lblA;
         private System.Windows.Forms.Label lblS;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label4;
     }
 }
 
