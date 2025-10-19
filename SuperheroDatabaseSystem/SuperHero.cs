@@ -18,7 +18,7 @@ namespace SuperheroDatabaseSystem
 
 
 
-        //It Automatically determines the rank based on the exam score.
+        // this property calculates the rank based on the exam score
         public string Rank
         {
             get
@@ -51,7 +51,7 @@ namespace SuperheroDatabaseSystem
         {
             get
             {
-                // Determines the threat level based on the Superheros rank.
+                // Determines the threat level based on the Superheros rank
   
                 switch (Rank)
                 {
@@ -69,10 +69,10 @@ namespace SuperheroDatabaseSystem
             }
         }
 
-        // This method creates a superhero list from a line of text , read from a file.
+        // This method creates a superhero object from a line of text read from the file
         public static Superhero CreateHeroFromFile(string line)
         {  
-            string[] heroDetails = line.Split(',');
+            string[] heroDetails = line.Split('|');
 
             if (heroDetails.Length >= 5 )
             {
@@ -96,11 +96,11 @@ namespace SuperheroDatabaseSystem
         }
 
 
-        // This method ensures the details of the superhero are displayed in a single line which is separated by commas.
+        //The ToString method is overridden to format the superhero data for file storage
 
         public override string ToString()
         {
-            return $"{HeroID},{Name},{Age},{SuperPower},{ExamScore},{Rank},{ThreatLevel}";
+            return $"{HeroID}|{Name}|{Age}|{SuperPower}|{ExamScore}|{Rank}|{ThreatLevel}";
         }
     }
 }
